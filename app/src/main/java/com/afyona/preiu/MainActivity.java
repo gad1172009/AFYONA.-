@@ -2,197 +2,140 @@ package com.afyona.preiu;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Build;
-import android.provider.Settings;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
-import android.content.Intent;
-import android.net.Uri;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    private int dp(float v) {
-        return (int)(v * getResources().getDisplayMetrics().density + 0.5f);
-    }
+    int bg = Color.rgb(10, 10, 18);
+    int card = Color.rgb(22, 22, 34);
+    int purple = Color.rgb(142, 68, 255);
+    int white = Color.WHITE;
+    int gray = Color.rgb(170, 170, 185);
 
-    private TextView text(String s, float size, int color, boolean bold) {
-        TextView v = new TextView(this);
-        v.setText(s);
-        v.setTextSize(size);
-        v.setTextColor(color);
-        if (bold) v.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        return v;
-    }
-
-    private LinearLayout card() {
-        LinearLayout c = new LinearLayout(this);
-        c.setOrientation(LinearLayout.VERTICAL);
-        c.setPadding(dp(18), dp(15), dp(18), dp(15));
-        c.setBackgroundColor(Color.rgb(18,18,26));
-        return c;
-    }
-
-    private Button action(String s) {
-        Button b = new Button(this);
-        b.setText(s);
-        b.setTextColor(Color.WHITE);
-        b.setTextSize(13);
-        return b;
-    }
-
-    private void addSpace(LinearLayout root, int h) {
-        Space s = new Space(this);
-        root.addView(s, new LinearLayout.LayoutParams(1, dp(h)));
-    }
+    LinearLayout root;
+    LinearLayout content;
 
     @Override
-    protected void onCreate(Bundle state) {
-        super.onCreate(state);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(Color.rgb(7,7,11));
-        getWindow().setNavigationBarColor(Color.rgb(7,7,11));
-
-        LinearLayout root = new LinearLayout(this);
+        root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(18), dp(20), dp(18), dp(18));
-        root.setBackgroundColor(Color.rgb(7,7,11));
+        root.setBackgroundColor(bg);
 
-        TextView logo = text("AFYONA", 31, Color.WHITE, true);
-        root.addView(logo);
-
-        root.addView(text(
-                "PRE,IU,  •  GAMING CONTROL CENTER",
-                11, Color.rgb(167,139,250), true));
-
-        addSpace(root, 16);
-
-        LinearLayout device = card();
-
-        device.addView(text("DEVICE", 11,
-                Color.rgb(150,150,165), true));
-
-        String model = Build.MANUFACTURER + " " + Build.MODEL;
-        String android = "Android " + Build.VERSION.RELEASE;
-
-        device.addView(text(model, 18, Color.WHITE, true));
-        device.addView(text(android, 12,
-                Color.rgb(150,150,165), false));
-
-        root.addView(device);
-
-        addSpace(root, 12);
-
-        LinearLayout shizuku = card();
-
-        shizuku.addView(text("SHIZUKU", 11,
-                Color.rgb(150,150,165), true));
-
-        TextView shizukuStatus = text(
-                "Checking service...",
-                16, Color.rgb(251,191,36), true);
-
-        shizuku.addView(shizukuStatus);
-
-        Button shizukuButton = action("OPEN SHIZUKU");
-
-        shizukuButton.setOnClickListener(v -> {
-            try {
-                Intent i = getPackageManager()
-                        .getLaunchIntentForPackage("moe.shizuku.privileged.api");
-                if (i != null) {
-                    startActivity(i);
-                } else {
-                    Toast.makeText(this,
-                            "Shizuku غير مثبت على الجهاز",
-                            Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Toast.makeText(this,
-                        "تعذر فتح Shizuku",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        shizuku.addView(shizukuButton);
-
-        root.addView(shizuku);
-
-        addSpace(root, 12);
-
-        TextView title = text(
-                "CONTROL CENTER",
-                12, Color.rgb(150,150,165), true);
-
-        root.addView(title);
-
-        LinearLayout row1 = new LinearLayout(this);
-        row1.setOrientation(LinearLayout.HORIZONTAL);
-
-        Button gaming = action("🎮  GAMING");
-        Button touch = action("🎯  TOUCH");
-
-        row1.addView(gaming,
-                new LinearLayout.LayoutParams(0, dp(58), 1));
-        row1.addView(touch,
-                new LinearLayout.LayoutParams(0, dp(58), 1));
-
-        root.addView(row1);
-
-        LinearLayout row2 = new LinearLayout(this);
-        row2.setOrientation(LinearLayout.HORIZONTAL);
-
-        Button display = action("🖥  DISPLAY");
-        Button performance = action("⚡  PERFORMANCE");
-
-        row2.addView(display,
-                new LinearLayout.LayoutParams(0, dp(58), 1));
-        row2.addView(performance,
-                new LinearLayout.LayoutParams(0, dp(58), 1));
-
-        root.addView(row2);
-
-        touch.setOnClickListener(v ->
-                Toast.makeText(this,
-                        "Touch Center: Android والجهاز يحددان القيم الفعلية المتاحة.",
-                        Toast.LENGTH_LONG).show());
-
-        display.setOnClickListener(v ->
-                Toast.makeText(this,
-                        "Display: قراءة إعدادات الشاشة قبل تطبيق أي تغيير.",
-                        Toast.LENGTH_SHORT).show());
-
-        gaming.setOnClickListener(v ->
-                Toast.makeText(this,
-                        "Gaming Profile جاهز لإعدادات الجهاز الآمنة.",
-                        Toast.LENGTH_SHORT).show());
-
-        performance.setOnClickListener(v ->
-                Toast.makeText(this,
-                        "Performance: لا يتم تغيير إعدادات حساسة بدون توافق.",
-                        Toast.LENGTH_SHORT).show());
-
-        addSpace(root, 14);
-
-        LinearLayout footer = card();
-        footer.setGravity(Gravity.CENTER);
-
-        footer.addView(text(
-                "AFYONA PRE,IU,",
-                13, Color.rgb(167,139,250), true));
-
-        footer.addView(text(
-                "Premium Gaming Utility",
-                10, Color.rgb(120,120,135), false));
-
-        root.addView(footer);
+        TextView header = new TextView(this);
+        header.setText("AFYONA");
+        header.setTextColor(white);
+        header.setTextSize(28);
+        header.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(24, 32, 24, 20);
+        root.addView(header, new LinearLayout.LayoutParams(-1, 90));
 
         ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.rgb(7,7,11));
-        scroll.addView(root);
+        content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(18, 5, 18, 30);
 
-        setContentView(scroll);
+        addHero();
+        addSection("⚡ Performance", "Boost performance and manage your device profile.");
+        addSection("🎮 Gaming Mode", "Gaming profile • Performance boost • Game tools");
+        addSection("🎯 Touch", "Touch response • Sensitivity • Gaming touch profile");
+        addSection("🖥 Display", "DPI • Screen information • Display profile");
+        addSection("📱 Device Info", "CPU • RAM • Android version • Device information");
+        addSection("🔗 Shizuku", "Connection status and service information");
+        addSection("💾 Profiles", "Create and switch between AFYONA profiles");
+
+        scroll.addView(content);
+        root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+
+        setContentView(root);
+    }
+
+    void addHero() {
+        LinearLayout box = card();
+
+        TextView title = text("AFYONA PREMIUM", 24, white);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+        TextView sub = text(
+                "Performance Control Center",
+                15,
+                gray
+        );
+
+        TextView status = text(
+                "● SYSTEM READY",
+                13,
+                Color.rgb(80, 220, 140)
+        );
+
+        box.addView(title);
+        box.addView(sub);
+        box.addView(status);
+
+        content.addView(box);
+    }
+
+    void addSection(String title, String description) {
+        LinearLayout box = card();
+
+        TextView t = text(title, 19, white);
+        t.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+        TextView d = text(description, 14, gray);
+
+        TextView button = text("OPEN  ›", 13, Color.WHITE);
+        button.setGravity(Gravity.CENTER);
+        button.setBackgroundColor(purple);
+        button.setPadding(18, 12, 18, 12);
+
+        button.setOnClickListener(v ->
+                Toast.makeText(
+                        MainActivity.this,
+                        title + " opened",
+                        Toast.LENGTH_SHORT
+                ).show()
+        );
+
+        box.addView(t);
+        box.addView(d);
+
+        LinearLayout.LayoutParams bp =
+                new LinearLayout.LayoutParams(-1, 52);
+        bp.topMargin = 14;
+        box.addView(button, bp);
+
+        content.addView(box);
+    }
+
+    LinearLayout card() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(22, 20, 22, 20);
+        box.setBackgroundColor(card);
+
+        LinearLayout.LayoutParams p =
+                new LinearLayout.LayoutParams(-1, -2);
+        p.bottomMargin = 14;
+
+        content.addView(box, p);
+        return box;
+    }
+
+    TextView text(String value, float size, int color) {
+        TextView t = new TextView(this);
+        t.setText(value);
+        t.setTextSize(size);
+        t.setTextColor(color);
+        t.setPadding(0, 5, 0, 5);
+        return t;
     }
 }
